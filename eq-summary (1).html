@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NTS² - EQ（感情知能）の理解と活用</title>
+  <style>
+    :root {
+      /* コアカラーシステム */
+      --color-bg-primary: #0a0e17;    /* 背景メイン */
+      --color-bg-secondary: #10141e;  /* 背景サブ */
+      --color-bg-tertiary: #161c2b;   /* カード背景 */
+      --color-text-primary: #e2e8f0;  /* メインテキスト */
+      --color-text-secondary: #94a3b8; /* サブテキスト */
+      --color-text-muted: #64748b;    /* 控えめなテキスト */
+      
+      /* アクセントカラー - サイバーパンク風 */
+      --color-accent-neon: #00f7ff;    /* ネオンブルー */
+      --color-accent-electric: #2563eb; /* エレクトリックブルー */
+      --color-accent-cyber: #7c3aed;    /* サイバーパープル */
+      --color-accent-tech: #f472b6;     /* テックピンク */
+      --color-accent-highlight: #22d3ee; /* ハイライト */
+      --color-accent-warning: #fb923c;   /* 警告オレンジ */
+      --color-accent-success: #4ade80;   /* 成功グリーン */
+      
+      /* グラスモーフィズム効果 */
+      --glass-blur: blur(16px);
+      --glass-opacity: 0.7;
+      --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+      
+      /* ネオンエフェクト */
+      --neon-glow: 0 0 10px var(--color-accent-neon), 0 0 20px rgba(0, 247, 255, 0.3);
+      --text-glow: 0 0 2px rgba(56, 189, 248, 0.7);
+      
+      /* フォントファミリー */
+      --font-main: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      /* サイズシステム */
+      --text-xs: 0.75rem;    /* 12px - 極小テキスト */
+      --text-sm: 0.875rem;   /* 14px - 小テキスト */
+      --text-base: 1rem;     /* 16px - 基本サイズ */
+      --text-lg: 1.125rem;   /* 18px - 大テキスト */
+      --text-xl: 1.25rem;    /* 20px - 見出しレベル3 */
+      --text-2xl: 1.5rem;    /* 24px - 見出しレベル2 */
+      --text-3xl: 2rem;      /* 32px - 見出しレベル1 */
+      --text-4xl: 2.4rem;    /* 38px - 主見出し */
+      
+      /* フォントウェイト */
+      --weight-normal: 400;
+      --weight-medium: 500;
+      --weight-semibold: 600;
+      --weight-bold: 700;
+    }
+    
+    /* ベーススタイル */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-main);
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    body::before {
+      content: "";
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(0, 247, 255, 0.05) 0%, transparent 30%),
+        linear-gradient(45deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+      z-index: -1;
+    }
+    
+    /* グリッドライン装飾 */
+    .grid-lines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(90deg, var(--color-bg-secondary) 1px, transparent 1px) 0 0 / 40px 100%,
+        linear-gradient(0deg, var(--color-bg-secondary) 1px, transparent 1px) 0 0 / 100% 40px;
+      opacity: 0.15;
+      z-index: -1;
+      pointer-events: none;
+    }
+    
+    /* コンテナ */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+    
+    /* メインコンテナ */
+    .nts-container {
+      background-color: var(--color-bg-secondary);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 3rem;
+      border: var(--glass-border);
+    }
+    
+    .nts-container::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-accent-neon), var(--color-accent-cyber));
+      opacity: 0.8;
+      border-radius: 2px;
+    }
+    
+    /* スクロールナビゲーション */
+    .scroll-nav {
+      position: fixed;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 10;
+    }
+    
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    
+    .nav-dot:hover, .nav-dot.active {
+      background-color: var(--color-accent-neon);
+      transform: scale(1.5);
+      box-shadow: var(--neon-glow);
+    }
+    
+    /* ヘッダーセクション */
+    .header-section {
+      background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, rgba(22, 28, 43, 0.8) 100%);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: var(--glass-border);
+    }
+    
+    .header-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at top right, rgba(0, 247, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at bottom left, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
+      z-index: 0;
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      background-color: rgba(0, 247, 255, 0.1);
+      color: var(--color-accent-neon);
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid rgba(0, 247, 255, 0.2);
+      text-shadow: var(--text-glow);
+    }
+    
+    .header-title {
+      font-size: var(--text-3xl);
+      font-weight: var(--weight-bold);
+      color: var(--color-text-primary);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    
+    .header-title span {
+      color: var(--color-accent-neon);
+      text-shadow: var(--neon-glow);
+    }
+    
+    .header-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    
+    .header-meta-item {
+      display: flex;
+      align-items: center;
+    }
+    
+    .header-meta-item svg {
+      margin-right: 0.5rem;
+      opacity: 0.8;
+    }
+    
+    /* ナビゲーションセクション */
+    .nav-section {
+      background-color: rgba(22, 28, 43, 0.5);
+      padding: 0.5rem 2rem;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-bottom: var(--glass-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .nav-list {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+    }
+    
+    .nav-list::-webkit-scrollbar {
+      height: 2px;
+    }
+    
+    .nav-list::-webkit-scrollbar-thumb {
+      background-color: var(--color-accent-neon);
+    }
+    
+    .nav-item a {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      transition: color 0.3s ease;
+      white-space: nowrap;
+    }
+    
+    .nav-item a:hover {
+      color: var(--color-accent-neon);
+    }
+    
+    /* 概要セクション */
+    .overview-section {
+      padding: 2rem;
+      background-color: var(--color-bg-secondary);
+      position: relative;
+      border-bottom: var(--glass-border);
+    }
+    
+    .section-title {
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-bold);
+      color: var(--color-text-primary);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(180deg, var(--color-accent-neon), var(--color-accent-cyber));
+      margin-right: 0.8rem;
+      border-radius: 2px;
+    }
+    
+    .summary-text {
+      font-size: var(--text-lg);
+      color: var(--color-text-secondary);
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .metric-card {
+      background-color: var(--color-bg-tertiary);
+      border-radius: 10px;
+      padding: 1.5rem;
+      position: relative;
+      border: var(--glass-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .metric-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+    
+    .metric-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-accent-neon), var(--color-accent-cyber));
+      opacity: 0.7;
+      border-radius: 3px 3px 0 0;
+    }
+    
+    .metric-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .metric-value {
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-bold);
+      color: var(--color-accent-neon);
+      text-shadow: var(--text-glow);
+      margin-bottom: 0.5rem;
+    }
+    
+    .metric-desc {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    
+    .tag {
+      display: inline-block;
+      font-size: var(--text-xs);
+      background-color: rgba(124, 58, 237, 0.1);
+      color: var(--color-accent-cyber);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-weight: var(--weight-medium);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+    }
+    
+    /* 比較セクション */
+    .comparison-section {
+      padding: 2rem;
+      border-bottom: var(--glass-border);
+    }
+    
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: var(--text-sm);
+    }
+    
+    .comparison-table th,
+    .comparison-table td {
+      padding: 1.2rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .comparison-table th {
+      color: var(--color-accent-neon);
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      background-color: rgba(0, 247, 255, 0.05);
+    }
+    
+    .comparison-table td {
+      color: var(--color-text-secondary);
+    }
+    
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .comparison-table tr:hover td {
+      background-color: rgba(0, 247, 255, 0.05);
+    }
+    
+    .eq-cell {
+      color: var(--color-accent-tech) !important;
+    }
+    
+    .iq-cell {
+      color: var(--color-accent-electric) !important;
+    }
+    
+    /* グラフコンポーネント */
+    .graph-container {
+      margin: 2rem 0;
+      padding: 1rem;
+      background-color: var(--color-bg-tertiary);
+      border-radius: 10px;
+      border: var(--glass-border);
+    }
+    
+    .graph-title {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semibold);
+      color: var(--color-text-primary);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .bar-graph {
+      display: flex;
+      height: 300px;
+      align-items: flex-end;
+      gap: 20px;
+      padding: 0 20px;
+    }
+    
+    .bar-container {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .bar {
+      width: 60px;
+      background: linear-gradient(180deg, var(--color-accent-neon), var(--color-accent-cyber));
+      border-radius: 6px 6px 0 0;
+      position: relative;
+      transition: height 1s ease;
+      box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+    }
+    
+    .bar::before {
+      content: attr(data-value);
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--color-accent-neon);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+    }
+    
+    .bar-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+    
+    /* 構成要素セクション */
+    .components-section {
+      padding: 2rem;
+      border-bottom: var(--glass-border);
+    }
+    
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    
+    .component-card {
+      background-color: var(--color-bg-tertiary);
+      border-radius: 10px;
+      padding: 1.5rem;
+      position: relative;
+      border: var(--glass-border);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+    }
+    
+    .component-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .component-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .component-icon {
+      width: 48px;
+      height: 48px;
+      background-color: rgba(124, 58, 237, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .component-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--color-accent-cyber);
+    }
+    
+    .component-title {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semibold);
+      color: var(--color-accent-highlight);
+    }
+    
+    .component-desc {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: 1rem;
+    }
+    
+    .component-example {
+      background-color: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      border-left: 3px solid var(--color-accent-cyber);
+    }
+    
+    .component-example-title {
+      font-size: var(--text-xs);
+      color: var(--color-accent-tech);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+    
+    /* キーポイントセクション */
+    .keypoints-section {
+      padding: 2rem;
+      border-bottom: var(--glass-border);
+    }
+    
+    .keypoint-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .keypoint-card {
+      background-color: var(--color-bg-tertiary);
+      border-radius: 10px;
+      padding: 1.5rem;
+      position: relative;
+      border: var(--glass-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .keypoint-badge {
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      width: 28px;
+      height: 28px;
+      background-color: var(--color-accent-electric);
+      color: var(--color-text-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+    }
+    
+    .keypoint-title {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-semibold);
+      color: var(--color-accent-highlight);
+      margin: 1rem 0;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .keypoint-content {
+      font-size: var(--text-base);
+      color: var(--color-text-secondary);
+      flex-grow: 1;
+    }
+    
+    .keypoint-highlight {
+      color: var(--color-accent-tech);
+      font-weight: var(--weight-medium);
+    }
+    
+    .keypoint-list {
+      margin-top: 1rem;
+      padding-left: 1.5rem;
+    }
+    
+    .keypoint-list li {
+      color: var(--color-text-secondary);
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+    
+    .keypoint-list li::before {
+      content: "•";
+      position: absolute;
+      left: -1rem;
+      color: var(--color-accent-tech);
+    }
+    
+    /* 測定方法セクション */
+    .measurement-section {
+      padding: 2rem;
+      border-bottom: var(--glass-border);
+    }
+    
+    .methods-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .method-card {
+      background-color: var(--color-bg-tertiary);
+      border-radius: 10px;
+      padding: 1.5rem;
+      border: var(--glass-border);
+    }
+    
+    .method-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .method-title {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semibold);
+      color: var(--color-accent-highlight);
+    }
+    
+    .method-tag {
+      font-size: var(--text-xs);
+      background-color: rgba(0, 247, 255, 0.1);
+      color: var(--color-accent-neon);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 247, 255, 0.2);
+    }
+    
+    .method-content {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    
+    .method-features {
+      margin-top: 1rem;
+    }
+    
+    .method-feature {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: var(--text-sm);
+    }
+    
+    .method-feature svg {
+      color: var(--color-accent-neon);
+      margin-right: 0.5rem;
+      flex-shrink: 0;
+    }
+    
+    /* 技術詳細セクション：EQを高める方法 */
+    .technical-section {
+      padding: 2rem;
+      border-bottom: var(--glass-border);
+    }
+    
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    
+    .steps-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 10px;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--color-accent-neon), var(--color-accent-cyber));
+      opacity: 0.5;
+    }
+    
+    .step-item {
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    
+    .step-item::before {
+      content: "";
+      position: absolute;
+      top: 0.5rem;
+      left: -2rem;
+      width: 16px;
+      height: 16px;
+      background-color: var(--color-bg-tertiary);
+      border: 2px solid var(--color-accent-neon);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--color-accent-neon);
+    }
+    
+    .step-title {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semibold);
+      color: var(--color-accent-neon);
+      margin-bottom: 0.5rem;
+    }
+    
+    .step-content {
+      font-size: var(--text-base);
+      color: var(--color-text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .step-list {
+      list-style: none;
+      margin-top: 1rem;
+      padding-left: 1rem;
+    }
+    
+    .step-list li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--color-text-secondary);
+    }
+    
+    .step-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--color-accent-tech);
+      font-weight: bold;
+    }
+    
+    /* 事例セクション */
+    .case-studies-section {
+      padding: 2rem;
+      border-bottom: var(--glass-border);
+    }
+    
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .case-card {
+      background-color: var(--color-bg-tertiary);
+      border-radius: 10px;
+      overflow: hidden;
+      border: var(--glass-border);
+      transition: transform 0.3s ease;
+    }
+    
+    .case-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .case-header {
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(0, 247, 255, 0.1) 100%);
+      border-bottom: var(--glass-border);
+    }
+    
+    .case-industry {
+      font-size: var(--text-xs);
+      color: var(--color-accent-tech);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .case-title {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-semibold);
+      color: var(--color-text-primary);
+    }
+    
+    .case-content {
+      padding: 1.5rem;
+    }
+    
+    .case-text {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: 1rem;
+    }
+    
+    .case-results {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      padding: 1rem;
+    }
+    
+    .case-results-title {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--color-accent-success);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .case-results-title svg {
+      margin-right: 0.5rem;
+    }
+    
+    .case-results-list {
+      list-style: none;
+    }
+    
+    .case-results-list li {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: 0.3rem;
+      position: relative;
+      padding-left: 1.2rem;
+    }
+    
+    .case-results-list li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--color-accent-success);
+    }
+    
+    /* 関連情報セクション */
+    .related-section {
+      padding: 2rem;
+      border-bottom: var(--glass-border);
+    }
+    
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .info-card {
+      background-color: var(--color-bg-tertiary);
+      border-radius: 10px;
+      padding: 1.5rem;
+      position: relative;
+      border: var(--glass-border);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .info-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--color-accent-tech), var(--color-accent-cyber));
+      opacity: 0.7;
+      border-radius: 3px 0 0 3px;
+    }
+    
+    .info-title {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-semibold);
+      color: var(--color-accent-tech);
+      margin-bottom: 1rem;
+    }
+    
+    .info-content {
+      font-size: var(--text-base);
+      color: var(--color-text-secondary);
+      flex-grow: 1;
+    }
+    
+    .info-footer {
+      margin-top: 1.5rem;
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    /* トレーニングプログラムセクション */
+    .training-section {
+      padding: 2rem;
+      border-bottom: var(--glass-border);
+    }
+    
+    .program-card {
+      background-color: var(--color-bg-tertiary);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: var(--glass-border);
+    }
+    
+    .program-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .program-title-container {
+      flex-grow: 1;
+    }
+    
+    .program-category {
+      font-size: var(--text-xs);
+      color: var(--color-accent-cyber);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.3rem;
+    }
+    
+    .program-title {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-semibold);
+      color: var(--color-text-primary);
+    }
+    
+    .program-level {
+      font-size: var(--text-xs);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      background-color: rgba(0, 247, 255, 0.1);
+      color: var(--color-accent-neon);
+      flex-shrink: 0;
+      font-weight: var(--weight-medium);
+      border: 1px solid rgba(0, 247, 255, 0.2);
+    }
+    
+    .program-content {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: 1.5rem;
+    }
+    
+    .program-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .program-detail {
+      display: flex;
+      align-items: flex-start;
+    }
+    
+    .program-detail svg {
+      margin-right: 0.5rem;
+      margin-top: 0.2rem;
+      flex-shrink: 0;
+      color: var(--color-accent-neon);
+    }
+    
+    .detail-content {
+      flex-grow: 1;
+    }
+    
+    .detail-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-bottom: 0.2rem;
+    }
+    
+    .detail-value {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    
+    .program-modules {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      padding: 1rem;
+    }
+    
+    .modules-title {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--color-accent-highlight);
+      margin-bottom: 0.8rem;
+    }
+    
+    .modules-list {
+      list-style: none;
+    }
+    
+    .modules-list li {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    
+    .modules-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0.5rem;
+      color: var(--color-accent-tech);
+    }
+    
+    /* フッター */
+    .footer-section {
+      padding: 2rem;
+      background-color: var(--color-bg-secondary);
+      text-align: center;
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      position: relative;
+    }
+    
+    .footer-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-accent-neon), transparent);
+      opacity: 0.3;
+      margin-bottom: 1.5rem;
+    }
+    
+    .source-link {
+      color: var(--color-accent-highlight);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .source-link:hover {
+      color: var(--color-accent-neon);
+      text-shadow: var(--text-glow);
+    }
+    
+    .nts-badge {
+      display: inline-block;
+      background-color: rgba(0, 0, 0, 0.3);
+      font-family: var(--font-mono);
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      font-size: var(--text-xs);
+      margin-top: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* レスポンシブ対応 */
+    @media (max-width: 768px) {
+      .metrics-grid,
+      .keypoint-cards,
+      .components-grid,
+      .cards-grid,
+      .cases-grid,
+      .methods-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header-title {
+        font-size: var(--text-2xl);
+      }
+      
+      .section-title {
+        font-size: var(--text-xl);
+      }
+      
+      .comparison-table {
+        font-size: var(--text-xs);
+      }
+      
+      .comparison-table th,
+      .comparison-table td {
+        padding: 0.8rem;
+      }
+      
+      .bar {
+        width: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-lines"></div>
+  
+  <div class="container">
+    <div class="nts-container">
+      <!-- ヘッダーセクション -->
+      <section class="header-section" id="header">
+        <div class="header-content">
+          <div class="header-badge">組織心理学 | ビジネススキル</div>
+          <h1 class="header-title"><span>EQ（感情知能）</span>の理解と活用：個人の成長からチーム強化まで</h1>
+          <div class="header-meta">
+            <div class="header-meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              テクニカルレポート
+            </div>
+            <div class="header-meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              2025年
+            </div>
+            <div class="header-meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              更新: 15分前
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- ナビゲーションセクション -->
+      <section class="nav-section">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#overview">概要</a></li>
+          <li class="nav-item"><a href="#eq-vs-iq">EQとIQの比較</a></li>
+          <li class="nav-item"><a href="#components">EQの構成要素</a></li>
+          <li class="nav-item"><a href="#keypoints">キーポイント</a></li>
+          <li class="nav-item"><a href="#measurement">測定方法</a></li>
+          <li class="nav-item"><a href="#techniques">向上テクニック</a></li>
+          <li class="nav-item"><a href="#case-studies">活用事例</a></li>
+          <li class="nav-item"><a href="#training">トレーニング</a></li>
+          <li class="nav-item"><a href="#trends">最新動向</a></li>
+        </ul>
+      </section>
+      
+      <!-- 概要セクション -->
+      <section class="overview-section" id="overview">
+        <h2 class="section-title">OVERVIEW</h2>
+        <p class="summary-text">
+          感情知能（EQ）は、感情を理解し、管理し、効果的に活用する能力として、現代のビジネス環境や人間関係において重要視されています。EQは遺伝などの先天的要素よりも、教育や学習、訓練によって高めることができ、個人の成長からチーム強化、組織の成功に至るまで幅広い影響を持っています。本レポートでは、EQの基本概念から育成方法、そしてチームでの活用法まで総合的に解説します。
+        </p>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">構成要素</div>
+            <div class="metric-value">8</div>
+            <div class="metric-desc">EQを構成する主要能力の数</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">改善可能性</div>
+            <div class="metric-value">高</div>
+            <div class="metric-desc">教育・訓練による向上度</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">応用領域</div>
+            <div class="metric-value">多</div>
+            <div class="metric-desc">個人・チーム・組織・AI</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">ビジネス影響</div>
+            <div class="metric-value">30%+</div>
+            <div class="metric-desc">チーム業績向上への寄与率</div>
+          </div>
+        </div>
+        
+        <div class="tags-container">
+          <div class="tag">感情知能</div>
+          <div class="tag">リーダーシップ</div>
+          <div class="tag">共感力</div>
+          <div class="tag">自己管理</div>
+          <div class="tag">チームEQ</div>
+          <div class="tag">イノベーション</div>
+          <div class="tag">AIとEQ</div>
+          <div class="tag">心理的安全性</div>
+          <div class="tag">ストレス耐性</div>
+          <div class="tag">人材育成</div>
+        </div>
+      </section>
+      
+      <!-- EQとIQの比較セクション -->
+      <section class="comparison-section" id="eq-vs-iq">
+        <h2 class="section-title">EQとIQの比較</h2>
+        <p class="summary-text">
+          伝統的な知能指数（IQ）と感情知能（EQ）は、異なる能力を測定する指標です。IQは論理的思考や問題解決能力を表す一方、EQは感情に関連する能力を測定します。両者は相互に排他的ではなく、補完的な関係にあり、様々な場面で異なる価値を発揮します。
+        </p>
+        
+        <table class="comparison-table">
+          <tr>
+            <th>比較項目</th>
+            <th>IQ（知能指数）</th>
+            <th>EQ（感情知能）</th>
+          </tr>
+          <tr>
+            <td>定義</td>
+            <td class="iq-cell">物事を記憶し、知識として生かすことで問題解決を行う能力</td>
+            <td class="eq-cell">感情を理解し、管理し、効果的に活用する能力</td>
+          </tr>
+          <tr>
+            <td>測定対象</td>
+            <td class="iq-cell">論理的思考、言語能力、数学的能力、空間認識、記憶力</td>
+            <td class="eq-cell">自己認識、自己管理、社会的認識、関係管理</td>
+          </tr>
+          <tr>
+            <td>向上可能性</td>
+            <td class="iq-cell">比較的固定的（先天的要素が強い）</td>
+            <td class="eq-cell">高い（教育・訓練により大幅向上可能）</td>
+          </tr>
+          <tr>
+            <td>ビジネスへの影響</td>
+            <td class="iq-cell">専門的知識やスキルの習得、問題分析に有効</td>
+            <td class="eq-cell">リーダーシップ、チームワーク、コミュニケーション、顧客関係に大きく影響</td>
+          </tr>
+          <tr>
+            <td>長期的な成功への寄与</td>
+            <td class="iq-cell">中程度（必要条件だが十分条件ではない）</td>
+            <td class="eq-cell">高い（特にリーダーシップ職において決定的要因となることが多い）</td>
+          </tr>
+          <tr>
+            <td>測定の歴史</td>
+            <td class="iq-cell">100年以上（体系的な測定は20世紀初頭から）</td>
+            <td class="eq-cell">比較的新しい（1990年代から本格的研究開始）</td>
+          </tr>
+        </table>
+        
+        <div class="graph-container">
+          <h3 class="graph-title">職位別 IQ vs EQ 重要度の比較</h3>
+          <div class="bar-graph">
+            <div class="bar-container">
+              <div class="bar" style="height: 120px;" data-value="40%"></div>
+              <div class="bar-label">一般職<br>EQ</div>
+            </div>
+            <div class="bar-container">
+              <div class="bar" style="height: 180px; background: linear-gradient(180deg, var(--color-accent-electric), var(--color-accent-cyber));" data-value="60%"></div>
+              <div class="bar-label">一般職<br>IQ</div>
+            </div>
+            <div class="bar-container">
+              <div class="bar" style="height: 150px;" data-value="50%"></div>
+              <div class="bar-label">中間管理職<br>EQ</div>
+            </div>
+            <div class="bar-container">
+              <div class="bar" style="height: 150px; background: linear-gradient(180deg, var(--color-accent-electric), var(--color-accent-cyber));" data-value="50%"></div>
+              <div class="bar-label">中間管理職<br>IQ</div>
+            </div>
+            <div class="bar-container">
+              <div class="bar" style="height: 210px;" data-value="70%"></div>
+              <div class="bar-label">上級管理職<br>EQ</div>
+            </div>
+            <div class="bar-container">
+              <div class="bar" style="height: 90px; background: linear-gradient(180deg, var(--color-accent-electric), var(--color-accent-cyber));" data-value="30%"></div>
+              <div class="bar-label">上級管理職<br>IQ</div>
+            </div>
+            <div class="bar-container">
+              <div class="bar" style="height: 240px;" data-value="80%"></div>
+              <div class="bar-label">経営層<br>EQ</div>
+            </div>
+            <div class="bar-container">
+              <div class="bar" style="height: 60px; background: linear-gradient(180deg, var(--color-accent-electric), var(--color-accent-cyber));" data-value="20%"></div>
+              <div class="bar-label">経営層<br>IQ</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- EQの構成要素セクション -->
+      <section class="components-section" id="components">
+        <h2 class="section-title">EQの構成要素</h2>
+        <p class="summary-text">
+          EQは単一の能力ではなく、複数の要素が組み合わさった複合的な能力です。代表的なモデルでは、8つの主要な構成要素に分類されており、これらが相互に作用することで総合的なEQ能力が形成されます。それぞれの要素は独立して訓練・向上させることが可能です。
+        </p>
+        
+        <div class="components-grid">
+          <div class="component-card">
+            <div class="component-header">
+              <div class="component-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </div>
+              <h3 class="component-title">感情リテラシー</h3>
+            </div>
+            <p class="component-desc">自他の感情を正確に認識し、その意味を理解する能力です。これは、感情に名前をつけて識別し、その背後にある原因や理由を把握することを含みます。</p>
+            <div class="component-example">
+              <div class="component-example-title">活用例</div>
+              <p>会議中に同僚の表情や姿勢から彼らが不満や懸念を抱いていることを察知し、積極的に意見を聞くことで、プロジェクトの潜在的な問題点を早期に発見できる。</p>
+            </div>
+          </div>
+          
+          <div class="component-card">
+            <div class="component-header">
+              <div class="component-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                  <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                  <line x1="6" y1="1" x2="6" y2="4"></line>
+                  <line x1="10" y1="1" x2="10" y2="4"></line>
+                  <line x1="14" y1="1" x2="14" y2="4"></line>
+                </svg>
+              </div>
+              <h3 class="component-title">自己パターンの認識</h3>
+            </div>
+            <p class="component-desc">自分の行動や反応パターンを理解し、特定の状況下での自分の典型的な反応を予測する能力です。自分の強みと弱みを客観的に把握することを含みます。</p>
+            <div class="component-example">
+              <div class="component-example-title">活用例</div>
+              <p>締切が迫るとストレスで攻撃的になりやすい自分のパターンを認識し、締切前には余裕を持ったスケジュールを組み、ストレス管理のための休憩時間を確保する。</p>
+            </div>
+          </div>
+          
+          <div class="component-card">
+            <div class="component-header">
+              <div class="component-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="12" x2="2" y2="12"></line>
+                  <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+                  <line x1="6" y1="16" x2="6.01" y2="16"></line>
+                  <line x1="10" y1="16" x2="10.01" y2="16"></line>
+                </svg>
+              </div>
+              <h3 class="component-title">結果を見すえた思考</h3>
+            </div>
+            <p class="component-desc">感情に基づいて行動する前に、その行動の結果や影響を予測する能力です。衝動的な反応を抑え、より長期的な視点で判断することを可能にします。</p>
+            <div class="component-example">
+              <div class="component-example-title">活用例</div>
+              <p>部下の失敗に対して即座に叱責したい衝動を感じても、まず「叱責することでどのような結果が生まれるか」を考え、建設的なフィードバックを行うことで学習機会を提供する。</p>
+            </div>
+          </div>
+          
+          <div class="component-card">
+            <div class="component-header">
+              <div class="component-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+              </div>
+              <h3 class="component-title">感情のナビゲート</h3>
+            </div>
+            <p class="component-desc">感情をコントロールし、適切に表現する能力です。否定的な感情を建設的な方向に変換したり、感情的な状態を目的に合わせて調整したりする能力を含みます。</p>
+            <div class="component-example">
+              <div class="component-example-title">活用例</div>
+              <p>重要なプレゼンテーション前の緊張感を認識し、それをエネルギーに変換するため、深呼吸や前向きな自己対話を行い、最適なパフォーマンス状態を作り出す。</p>
+            </div>
+          </div>
+          
+          <div class="component-card">
+            <div class="component-header">
+              <div class="component-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </div>
+              <h3 class="component-title">内発的なモチベーション</h3>
+            </div>
+            <p class="component-desc">自己の内側から湧き出るやる気を見出し、外部からの報酬に依存せずに行動を継続する能力です。自分の価値観や目標と行動を一致させる力を含みます。</p>
+            <div class="component-example">
+              <div class="component-example-title">活用例</div>
+              <p>困難なプロジェクトに取り組む際、金銭的報酬や評価だけでなく、「このプロジェクトを通じて自分のスキルがどう向上するか」「社会にどのような価値を提供できるか」という内的動機を明確にする。</p>
+            </div>
+          </div>
+          
+          <div class="component-card">
+            <div class="component-header">
+              <div class="component-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                  <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                  <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                </svg>
+              </div>
+              <h3 class="component-title">楽観性の発揮</h3>
+            </div>
+            <p class="component-desc">困難な状況でも前向きな見方ができ、失敗や挫折を成長の機会として捉える能力です。現実的な楽観主義を持ち、逆境からの回復力（レジリエンス）を高めます。</p>
+            <div class="component-example">
+              <div class="component-example-title">活用例</div>
+              <p>大きな提案が却下された際も、「これは単なる失敗ではなく、より良い提案を作るための学びの機会だ」と捉え直し、フィードバックを分析して次の提案に活かす姿勢を維持する。</p>
+            </div>
+          </div>
+          
+          <div class="component-card">
+            <div class="component-header">
+              <div class="component-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+              </div>
+              <h3 class="component-title">共感力の活用</h3>
+            </div>
+            <p class="component-desc">他者の感情を理解し、その立場に立って考え、適切に反応する能力です。相手の視点を尊重し、感情的なニーズに応えることで、より良い人間関係を構築します。</p>
+            <div class="component-example">
+              <div class="component-example-title">活用例</div>
+              <p>組織変更の発表後、チームメンバーの不安や抵抗感を理解し、彼らの懸念を聞く場を設け、変更の理由を丁寧に説明するとともに、移行期の具体的なサポートを提供する。</p>
+            </div>
+          </div>
+          
+          <div class="component-card">
+            <div class="component-header">
+              <div class="component-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+                  <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+                </svg>
+              </div>
+              <h3 class="component-title">ノーブルゴールの追求</h3>
+            </div>
+            <p class="component-desc">より高い目的や価値に向かって行動する能力です。自分の行動が、自分自身や他者、組織、社会にとってどのような意味や価値を持つかを考慮した決断を下します。</p>
+            <div class="component-example">
+              <div class="component-example-title">活用例</div>
+              <p>短期的な利益だけでなく、「このプロジェクトは社会にどのような価値を生み出すか」「持続可能な未来にどう貢献するか」という高次の目的を明確にし、チーム全体のモチベーションと方向性を高める。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- キーポイントセクション -->
+      <section class="keypoints-section" id="keypoints">
+        <h2 class="section-title">KEY POINTS</h2>
+        <div class="keypoint-cards">
+          <div class="keypoint-card">
+            <div class="keypoint-badge">1</div>
+            <h3 class="keypoint-title">EQの重要性</h3>
+            <div class="keypoint-content">
+              EQは現代のビジネス環境において<span class="keypoint-highlight">リーダーシップとチームパフォーマンスの向上</span>に直結します。チームのパフォーマンスはメンバーの幸福度（ハピネス）に左右され、EQの高いリーダーやメンバーがいるチームほど、全体のハピネスとパフォーマンスが向上する傾向があります。特に重要なのは、EQが<span class="keypoint-highlight">遺伝などの先天的要素よりも、教育や学習、訓練によって高めることができる能力</span>だという点です。
+              
+              <ul class="keypoint-list">
+                <li>ビジネスで成功を収めているリーダーの多くが優れたEQを持ち、人心掌握の能力に優れている</li>
+                <li>EQの高い人材は適切なコミュニケーションが取れるため、人間関係のトラブルを招きにくい</li>
+                <li>適切なEQトレーニングにより、職場のストレスレベルが30%低減したという研究結果もある</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="keypoint-card">
+            <div class="keypoint-badge">2</div>
+            <h3 class="keypoint-title">個人レベルでのEQ向上法</h3>
+            <div class="keypoint-content">
+              EQを高めるには、まず<span class="keypoint-highlight">自分のEQを客観的・定量的に把握</span>することが重要です。具体的なアプローチとして、<span class="keypoint-highlight">感情認識トレーニング、行動変化による感情コントロール、阻害要因の認識と対応</span>などが効果的です。ストレスフルな状況に入る前に「自分が本当に望む結果は何か」と自問したり、感情的になりそうなときは一呼吸おいて10数えるなど、反応する前に少し時間を取ることが推奨されています。
+              
+              <ul class="keypoint-list">
+                <li>日常的に「感情日記」をつけることで、自分の感情パターンを把握できる</li>
+                <li>マインドフルネス瞑想を定期的に行うことで、感情を客観的に観察する能力が向上する</li>
+                <li>特定の感情を感じたときの身体反応（肩の緊張、呼吸の変化など）に気づくことが第一歩</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="keypoint-card">
+            <div class="keypoint-badge">3</div>
+            <h3 class="keypoint-title">子どものEQ育成</h3>
+            <div class="keypoint-content">
+              子どものEQを伸ばすためには、<span class="keypoint-highlight">安心感を与えること</span>が基本となります。日頃からスキンシップや言葉で愛情をたくさん表現することが大切です。また、子どもをほめる際は<span class="keypoint-highlight">「過程を具体的にほめること」</span>が効果的です。「頭がいいね」といった抽象的な褒め方よりも、「問題を最後まで読んでいたね」など、努力の過程を具体的にほめることで、物事への興味や関心、モチベーションが高まります。
+              
+              <ul class="keypoint-list">
+                <li>感情を表す言葉を豊かに教えることで、子どもの感情表現力が向上する</li>
+                <li>親自身がEQの高い行動をモデリングすることが最も効果的な教育法である</li>
+                <li>子どもが感情を表現したときに否定せず、受け止めることで感情リテラシーが育つ</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="keypoint-card">
+            <div class="keypoint-badge">4</div>
+            <h3 class="keypoint-title">チームでのEQ活用</h3>
+            <div class="keypoint-content">
+              EQの高いリーダーは、<span class="keypoint-highlight">組織やチームのパフォーマンス向上に大きく貢献</span>します。リーダーとしてEQを活かすポイントは、感情を無視せず受け止める、共感力を活用する、楽観性を発揮するなどです。チーム全体のEQ向上のためには、<span class="keypoint-highlight">EQ研修の導入、EQコーチングの活用、日常的な感情共有の促進</span>などの取り組みが効果的です。チームのリーダーだけでなく、メンバー全員がEQを高めることでチーム全体のパフォーマンスが向上します。
+              
+              <ul class="keypoint-list">
+                <li>チーム内に安全に感情や懸念を共有できる「心理的安全性」を確立することが重要</li>
+                <li>定期的なチェックインミーティングで感情状態を共有する習慣が効果的</li>
+                <li>EQの高いメンバーが1人でもいれば、チーム全体のEQとパフォーマンスが向上する</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="keypoint-card">
+            <div class="keypoint-badge">5</div>
+            <h3 class="keypoint-title">EQとイノベーション</h3>
+            <div class="keypoint-content">
+              近年、<span class="keypoint-highlight">イノベーションの創出においてもEQが重要な役割</span>を果たすことが認識されています。イノベーションの「主体的実践者」「支援者」「支援者を増やす人」といった様々な立場において、EQの発揮が成功に大きく関わります。特に「鬼軍曹」的な「正論とアイデアと行動」だけのアプローチから、<span class="keypoint-highlight">共感と創造を重視するアプローチへの転換</span>が、イノベーション推進において効果的であるという経験が共有されています。
+              
+              <ul class="keypoint-list">
+                <li>イノベーションプロセスには不確実性があり、そこから生じる不安や抵抗を適切に管理するにはEQが必須</li>
+                <li>異なる視点や経験を持つ人々の協力を促進するには、高い共感力が重要</li>
+                <li>失敗からの学びを促進するには、心理的安全性と感情的サポートが不可欠</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- EQの測定方法セクション -->
+      <section class="measurement-section" id="measurement">
+        <h2 class="section-title">EQの測定方法</h2>
+        <p class="summary-text">
+          EQを高めるためには、まず現状を把握することが重要です。様々なEQ測定ツールやアセスメントが開発されており、それぞれ異なるアプローチと特徴を持っています。以下に主要なEQ測定方法を紹介します。
+        </p>
+        
+        <div class="methods-grid">
+          <div class="method-card">
+            <div class="method-header">
+              <h3 class="method-title">EQ-i 2.0</h3>
+              <span class="method-tag">自己評価型</span>
+            </div>
+            <div class="method-content">
+              <p>Bar-On Emotional Quotient Inventory（EQ-i）の最新版で、感情的・社会的インテリジェンスを測定する包括的なツールです。5つの主要領域（自己認識、自己表現、対人関係、意思決定、ストレス管理）の15の下位スケールで評価します。</p>
+              <div class="method-features">
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  133項目の質問で約30分で完了
+                </div>
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  ビジネス版と一般版が利用可能
+                </div>
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  詳細なレポートと開発計画を提供
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="method-card">
+            <div class="method-header">
+              <h3 class="method-title">MSCEIT</h3>
+              <span class="method-tag">能力ベース</span>
+            </div>
+            <div class="method-content">
+              <p>Mayer-Salovey-Caruso Emotional Intelligence Test（MSCEIT）は、実際のEQ能力を測定するパフォーマンスベースのテストです。感情の知覚、感情を用いた思考促進、感情の理解、感情の管理という4つの能力を測定します。</p>
+              <div class="method-features">
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  141項目の実際の問題解決タスク
+                </div>
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  自己評価バイアスの影響を受けにくい
+                </div>
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  科学的研究で最も頻繁に使用される
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="method-card">
+            <div class="method-header">
+              <h3 class="method-title">Genos EI</h3>
+              <span class="method-tag">職場特化型</span>
+            </div>
+            <div class="method-content">
+              <p>Genos Emotional Intelligence Inventoryは、職場環境でのEQに特化した測定ツールです。自己認識、他者の感情認識、真正性、感情的推論、自己管理、前向きな影響力の6つの能力を評価します。</p>
+              <div class="method-features">
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  360度フィードバック機能を提供
+                </div>
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  職場での具体的行動に焦点
+                </div>
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  簡易版と詳細版が利用可能
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="method-card">
+            <div class="method-header">
+              <h3 class="method-title">Six Seconds SEI</h3>
+              <span class="method-tag">統合型</span>
+            </div>
+            <div class="method-content">
+              <p>Six Seconds Emotional Intelligence Assessment（SEI）は、「Know Yourself」（自己認識）、「Choose Yourself」（自己管理）、「Give Yourself」（目的志向）の3つのドメインと8つのコンピテンシーを評価する統合的アプローチです。</p>
+              <div class="method-features">
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  実用的な開発戦略とアクションプラン
+                </div>
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  ビジネス、教育、個人開発向けの複数版
+                </div>
+                <div class="method-feature">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  脳科学の知見に基づいたアプローチ
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 技術詳細セクション：EQを高める方法 -->
+      <section class="technical-section" id="techniques">
+        <h2 class="section-title">EQを高める方法</h2>
+        <div class="steps-container">
+          <div class="step-item">
+            <h3 class="step-title">EQの客観的把握</h3>
+            <p class="step-content">
+              EQを高めるためには、まず自分のEQを客観的・定量的に把握することが重要です。EQの専門家（トレーナー／プロファイラー）の助けを借りて、自分のEQを数値化し、その意味を理解することが第一歩となります。個人の強みと改善が必要な領域を明確にすることで、効率的なEQ開発が可能になります。
+            </p>
+          </div>
+          
+          <div class="step-item">
+            <h3 class="step-title">感情認識トレーニング</h3>
+            <p class="step-content">
+              日常的に自分の感情を観察し、名前をつけることで感情リテラシーを高めます。例えば、「今、私はイライラしている」「この状況に不安を感じている」など、感情に名前をつけることで、感情をより客観的に捉えることができます。感情認識能力が高まると、感情に振り回されることが少なくなり、適切な対応が可能になります。
+            </p>
+            <ul class="step-list">
+              <li>感情日記をつけて、1日に感じた様々な感情を記録する</li>
+              <li>基本感情（喜び、悲しみ、怒り、恐れ、驚き、嫌悪）から始めて、徐々に感情の種類と微妙な違いを識別できるようにする</li>
+              <li>感情を感じたときの身体反応（心拍数の上昇、呼吸パターンの変化など）に意識を向ける</li>
+            </ul>
+          </div>
+          
+          <div class="step-item">
+            <h3 class="step-title">行動変化による感情コントロール</h3>
+            <p class="step-content">
+              特定の感情をマネージするための行動をあらかじめ決めておき、その行動をとることを習慣づけます。例えば、イライラしたときは一旦その場を離れてコーヒーを飲むなど、具体的な行動パターンを確立しておくことが効果的です。感情は身体状態と密接に関連しているため、行動を変えることで感情状態を変化させることができます。
+            </p>
+            <ul class="step-list">
+              <li>ストレスを感じたら深呼吸を5回行う習慣をつける</li>
+              <li>怒りを感じたら「一時停止ボタン」を押すイメージをし、10秒数えてから反応する</li>
+              <li>ネガティブな感情が続くときは、短い散歩や身体を動かす活動に切り替える</li>
+            </ul>
+          </div>
+          
+          <div class="step-item">
+            <h3 class="step-title">阻害要因の認識と対応</h3>
+            <p class="step-content">
+              ストレス下で現れる自分の「阻害要因」（性格の負の側面）を認識し、それに対処する方法を学びます。例えば、ストレスを感じると攻撃的になってしまう傾向がある場合、その兆候を早期に察知し、対処策を講じることが重要です。自分の弱点を理解することは、EQを高める上で非常に重要なステップです。
+            </p>
+            <ul class="step-list">
+              <li>自分がストレスを感じたときに最も頻繁に現れる行動パターンをリストアップする</li>
+              <li>それらの阻害要因が現れる状況や引き金となる要素を特定する</li>
+              <li>阻害要因が活性化したときの「早期警告サイン」を見つけ、早い段階での対処法を練習する</li>
+            </ul>
+          </div>
+          
+          <div class="step-item">
+            <h3 class="step-title">マインドフルネス実践</h3>
+            <p class="step-content">
+              マインドフルネス瞑想は、EQを高めるための効果的なアプローチとして広く認識されています。定期的なマインドフルネス実践により、現在の瞬間に意識を集中させ、判断せずに自分の感情や思考を観察する能力が向上します。これにより、感情的な反応と意識的な対応の間に「隙間」を作り出し、より適切な感情管理が可能になります。
+            </p>
+            <ul class="step-list">
+              <li>1日5-10分の簡単な呼吸瞑想から始め、徐々に時間を延ばす</li>
+              <li>日常的な活動（食事、歩行、入浴など）をマインドフルに行う練習をする</li>
+              <li>ボディスキャン瞑想を通じて、感情が身体に与える影響に気づく訓練をする</li>
+            </ul>
+          </div>
+          
+          <div class="step-item">
+            <h3 class="step-title">EQコーチングの活用</h3>
+            <p class="step-content">
+              EQコーチングは、EQ検査を受けた上で、その結果をもとに受検者とコーチで対話しながら現在の心の状態を掘り下げ、そこから今後のありたい姿と行動を描いていくプロセスです。特に予測不可能な未来に向かって、日々行動や判断を迫られる経営者や管理職の方には、定期的なEQコーチングが非常に有効です。
+            </p>
+            <ul class="step-list">
+              <li>EQの向上：感情の理解と管理能力が高まる</li>
+              <li>自己理解・自己覚知：自分の強みや弱み、行動パターンがより明確になる</li>
+              <li>新たな可能性の発見：これまで気づかなかった自分の可能性に気づくことができる</li>
+              <li>悩みに対する解決の糸口の発見：感情面からのアプローチにより問題解決の新たな視点が得られる</li>
+            </ul>
+          </div>
+          
+          <div class="step-item">
+            <h3 class="step-title">他者からのフィードバック</h3>
+            <p class="step-content">
+              自己認識を高めるための効果的な方法の一つは、信頼できる他者からの率直なフィードバックを求めることです。自分では気づかない自分の感情表現や対人関係でのパターンについて、客観的な視点を得ることができます。特に360度フィードバックなど、複数の視点からのインプットは非常に価値があります。
+            </p>
+            <ul class="step-list">
+              <li>定期的に信頼できる同僚や友人に自分の感情表現や対人スキルについて意見を求める</li>
+              <li>批判的なフィードバックでも防衛的にならず、学びの機会として受け止める姿勢を持つ</li>
+              <li>具体的な状況や行動についてのフィードバックを求め、一般的な印象だけに頼らない</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 事例セクション -->
+      <section class="case-studies-section" id="case-studies">
+        <h2 class="section-title">EQ活用事例</h2>
+        <p class="summary-text">
+          EQは様々な組織や環境で実践的に活用され、具体的な成果を上げています。以下は、異なる業界や状況におけるEQ活用の成功事例です。これらの事例を通じて、EQがいかに組織の課題解決や目標達成に貢献するかを理解できます。
+        </p>
+        
+        <div class="cases-grid">
+          <div class="case-card">
+            <div class="case-header">
+              <div class="case-industry">テクノロジー業界</div>
+              <h3 class="case-title">グローバルITサービス企業のリーダーシップ変革</h3>
+            </div>
+            <div class="case-content">
+              <p class="case-text">
+                5,000人以上の従業員を持つグローバルITサービス企業が、急速な成長とリモートワークへの移行に伴い、チームの断絶と従業員のエンゲージメント低下に悩んでいました。同社は上級管理職100名を対象にEQリーダーシップ開発プログラムを導入。6ヶ月間の集中的なEQトレーニングとコーチングを実施しました。
+              </p>
+              <div class="case-results">
+                <h4 class="case-results-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  結果
+                </h4>
+                <ul class="case-results-list">
+                  <li>従業員エンゲージメントスコアが23%向上</li>
+                  <li>リーダーの自己認識スコアが平均35%改善</li>
+                  <li>チーム間のコミュニケーション満足度が41%増加</li>
+                  <li>従業員の離職率が18%から11%に減少</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="case-card">
+            <div class="case-header">
+              <div class="case-industry">ヘルスケア業界</div>
+              <h3 class="case-title">大学病院における医療チームの連携強化</h3>
+            </div>
+            <div class="case-content">
+              <p class="case-text">
+                ある大学病院の救急部門では、高ストレス環境での医師と看護師間のコミュニケーション問題が患者ケアに影響を与えていました。病院管理部は、多職種チーム向けのEQワークショップを導入し、感情認識、共感、ストレス下でのコミュニケーションスキルに焦点を当てたトレーニングを3ヶ月間実施しました。
+              </p>
+              <div class="case-results">
+                <h4 class="case-results-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  結果
+                </h4>
+                <ul class="case-results-list">
+                  <li>医療ミスの報告が27%減少</li>
+                  <li>患者満足度が17%向上</li>
+                  <li>チームメンバー間の対立が38%減少</li>
+                  <li>スタッフのバーンアウト指標が31%改善</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="case-card">
+            <div class="case-header">
+              <div class="case-industry">教育分野</div>
+              <h3 class="case-title">公立学校区全体のEQ導入プログラム</h3>
+            </div>
+            <div class="case-content">
+              <p class="case-text">
+                生徒の行動問題といじめの増加に対応するため、ある公立学校区では教師、生徒、管理職を対象とした包括的なEQプログラムを導入しました。教師向けのEQトレーニング、カリキュラムへのEQ要素の統合、学校全体での「感情リテラシー」の取り組みを2年間にわたって実施しました。
+              </p>
+              <div class="case-results">
+                <h4 class="case-results-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  結果
+                </h4>
+                <ul class="case-results-list">
+                  <li>懲戒処分の発生率が43%減少</li>
+                  <li>いじめ関連のインシデントが29%減少</li>
+                  <li>学業成績が平均12%向上</li>
+                  <li>教師の職務満足度が22%向上し、離職率が低下</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="case-card">
+            <div class="case-header">
+              <div class="case-industry">営業・販売</div>
+              <h3 class="case-title">小売チェーンの顧客サービス変革</h3>
+            </div>
+            <div class="case-content">
+              <p class="case-text">
+                全国展開する小売チェーンでは、オンライン競合の増加に対応するため、店舗体験の差別化を目指していました。同社は全店舗のマネージャーと接客スタッフを対象に、感情認識と共感に焦点を当てたEQトレーニングプログラムを導入。特に「感情的に困難な顧客対応」のスキル向上に注力しました。
+              </p>
+              <div class="case-results">
+                <h4 class="case-results-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  結果
+                </h4>
+                <ul class="case-results-list">
+                  <li>顧客満足度スコアが32%向上</li>
+                  <li>リピート購入率が18%増加</li>
+                  <li>顧客クレームが24%減少</li>
+                  <li>従業員の接客品質評価が平均27%改善</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- トレーニングプログラムセクション -->
+      <section class="training-section" id="training">
+        <h2 class="section-title">EQトレーニングプログラム</h2>
+        <p class="summary-text">
+          EQを向上させるための様々なトレーニングプログラムが開発されています。目的や対象者に応じて、適切なプログラムを選択することが重要です。以下に代表的なEQトレーニングプログラムを紹介します。
+        </p>
+        
+        <div class="program-card">
+          <div class="program-header">
+            <div class="program-title-container">
+              <div class="program-category">個人向け</div>
+              <h3 class="program-title">EQエッセンシャルスキル養成コース</h3>
+            </div>
+            <div class="program-level">入門〜中級</div>
+          </div>
+          <div class="program-content">
+            <p>EQの基本概念と8つの構成要素について学び、日常生活やビジネスシーンでの実践的なスキルを養成するプログラムです。自己認識から始まり、段階的に他者への認識と関係性の構築へと進みます。</p>
+          </div>
+          <div class="program-details">
+            <div class="program-detail">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <div class="detail-content">
+                <div class="detail-label">期間</div>
+                <div class="detail-value">8週間（週1回2時間）</div>
+              </div>
+            </div>
+            <div class="program-detail">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <div class="detail-content">
+                <div class="detail-label">形式</div>
+                <div class="detail-value">少人数グループワークショップ</div>
+              </div>
+            </div>
+            <div class="program-detail">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <div class="detail-content">
+                <div class="detail-label">対象者</div>
+                <div class="detail-value">EQを基礎から学びたい個人</div>
+              </div>
+            </div>
+          </div>
+          <div class="program-modules">
+            <h4 class="modules-title">主要モジュール</h4>
+            <ul class="modules-list">
+              <li>感情リテラシーと感情マッピング</li>
+              <li>自己認識と自己パターンの特定</li>
+              <li>感情のナビゲートと効果的な表現</li>
+              <li>共感力の開発と対人関係スキル</li>
+              <li>ストレス状況下での感情管理</li>
+              <li>個人別EQ開発プランの作成</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="program-card">
+          <div class="program-header">
+            <div class="program-title-container">
+              <div class="program-category">リーダー向け</div>
+              <h3 class="program-title">EQリーダーシップ開発プログラム</h3>
+            </div>
+            <div class="program-level">中級〜上級</div>
+          </div>
+          <div class="program-content">
+            <p>管理職やリーダー向けに設計された、リーダーシップとEQの統合に焦点を当てたプログラムです。チーム管理、変化の導入、困難な会話の進行などにおいて、EQを活用したリーダーシップスキルを開発します。</p>
+          </div>
+          <div class="program-details">
+            <div class="program-detail">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <div class="detail-content">
+                <div class="detail-label">期間</div>
+                <div class="detail-value">3ヶ月（集中セッション+コーチング）</div>
+              </div>
+            </div>
+            <div class="program-detail">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <div class="detail-content">
+                <div class="detail-label">形式</div>
+                <div class="detail-value">ワークショップ+個別コーチング</div>
+              </div>
+            </div>
+            <div class="program-detail">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <div class="detail-content">
+                <div class="detail-label">対象者</div>
+                <div class="detail-value">管理職、リーダー、経営幹部</div>
+              </div>
+            </div>
+          </div>
+          <div class="program-modules">
+            <h4 class="modules-title">主要モジュール</h4>
+            <ul class="modules-list">
+              <li>リーダーとしての自己認識と影響力</li>
+              <li>チームの感情的環境の構築と心理的安全性</li>
+              <li>変化と不確実性をリードするためのEQ</li>
+              <li>対立解決とEQ（困難な会話の進行法）</li>
+              <li>チームEQの開発とコーチング</li>
+              <li>組織文化とEQの統合</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="program-card">
+          <div class="program-header">
+            <div class="program-title-container">
+              <div class="program-category">組織向け</div>
+              <h3 class="program-title">組織全体EQ文化構築プログラム</h3>
+            </div>
+            <div class="program-level">包括的</div>
+          </div>
+          <div class="program-content">
+            <p>組織全体のEQ文化を構築するための包括的なプログラムです。個人のEQ開発から、チームEQ向上、組織プロセスへのEQ統合まで、多層的なアプローチで組織変革を支援します。持続可能な形でEQを組織DNAに組み込むことを目指します。</p>
+          </div>
+          <div class="program-details">
+            <div class="program-detail">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <div class="detail-content">
+                <div class="detail-label">期間</div>
+                <div class="detail-value">6ヶ月〜1年（段階的導入）</div>
+              </div>
+            </div>
+            <div class="program-detail">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <div class="detail-content">
+                <div class="detail-label">形式</div>
+                <div class="detail-value">複合型（診断、研修、コーチング）</div>
+              </div>
+            </div>
+            <div class="program-detail">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <div class="detail-content">
+                <div class="detail-label">対象者</div>
+                <div class="detail-value">組織全体（全階層）</div>
+              </div>
+            </div>
+          </div>
+          <div class="program-modules">
+            <h4 class="modules-title">主要モジュール</h4>
+            <ul class="modules-list">
+              <li>組織EQ診断と現状分析</li>
+              <li>リーダーシップチームのEQ開発（トップダウンアプローチ）</li>
+              <li>階層別EQトレーニングプログラム</li>
+              <li>EQチャンピオン育成（内部トレーナー養成）</li>
+              <li>人事プロセスへのEQ統合（採用、評価、育成）</li>
+              <li>持続可能なEQ文化の構築と測定</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 最新動向セクション -->
+      <section class="related-section" id="trends">
+        <h2 class="section-title">最新のEQ研究動向</h2>
+        <div class="cards-grid">
+          <div class="info-card">
+            <h3 class="info-title">AIとEQの融合</h3>
+            <div class="info-content">
+              技術の進化に伴い、AIにおいてもEQの概念が取り入れられるようになっています。2025年初頭に研究プレビューが公開されたGPT-4.5は、従来モデルに比べユーザーの意図理解や感情的文脈への対応能力（EQ）が大幅に向上したと報じられています。この進化により、AIとの対話がより自然で創造的になり、ユーザーのトーンや皮肉を理解して共感的に応答する能力が強化されています。これは「パーソナリティ・コミュニケーションのアップグレード」とも評され、従来の汎用的AIアシスタントから「親友のようなAI」へのシフトを意味しています。
+            </div>
+            <div class="info-footer">
+              最新の研究によれば、感情認識AIの医療、カスタマーサービス、教育分野への応用が急速に進んでいます。
+            </div>
+          </div>
+          
+          <div class="info-card">
+            <h3 class="info-title">イノベーションとEQ</h3>
+            <div class="info-content">
+              近年、イノベーションの創出においてもEQが重要な役割を果たすことが認識されています。イノベーションの「主体的実践者」「支援者」「支援者を増やす人」といった様々な立場において、EQの発揮が成功に大きく関わることが指摘されています。特に「鬼軍曹」的な「正論とアイデアと行動」だけのアプローチから、共感と創造を重視するアプローチへの転換が、イノベーション推進において効果的であるという経験が共有されています。これは、チームメンバーの感情を理解し、巻き込みながらイノベーションを進めることの重要性を示しています。
+            </div>
+            <div class="info-footer">
+              イノベーション研究の第一人者達は、創造的プロセスにおける「感情的な安全性」の重要性を強調しています。
+            </div>
+          </div>
+          
+          <div class="info-card">
+            <h3 class="info-title">チームEQの可能性</h3>
+            <div class="info-content">
+              個人のEQだけでなく、「チームEQ」という概念も注目されています。チームのリーダーがEQに関する知見やスキルを有していなくても、チームメンバーの誰かがEQを鍛え、感情をマネージするスキルを有していれば、チーム内のハピネスを保ち、パフォーマンスを維持・向上させることが可能になります。これは、チーム全体としての感情的知性を高めることの重要性を示しています。最新の研究では、チームEQが高いチームほど、プロジェクトの成功率が高く、メンバーの満足度も高いことが示されています。
+            </div>
+            <div class="info-footer">
+              リモートワークやハイブリッドワークの普及により、チームEQの重要性はさらに高まっています。
+            </div>
+          </div>
+          
+          <div class="info-card">
+            <h3 class="info-title">脳科学とEQ</h3>
+            <div class="info-content">
+              脳科学の進歩により、EQと脳機能の関係についての理解が深まっています。fMRI研究では、EQの高い人は感情を処理する脳領域（扁桃体）と理性的思考を司る領域（前頭前皮質）の連携が効率的であることが示されています。また、レジリエンス（回復力）とEQの関連性も神経学的に実証されつつあります。特に、ストレスへの生理的反応とEQの関係が明らかになり、EQトレーニングが実際に脳の構造と機能に変化をもたらす可能性が示唆されています。
+            </div>
+            <div class="info-footer">
+              最新の縦断研究では、継続的なEQ訓練が脳の特定領域の容積増加と関連していることが示されています。
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- フッター -->
+      <section class="footer-section">
+        <div class="footer-divider"></div>
+        <p>
+          出典: EQ（感情知能）の理解と活用：個人の成長からチーム強化まで<br>
+          参照情報: 複数の学術研究・業界レポートからの知見を統合
+        </p>
+        <div class="nts-badge">NeoCyber Tech Summary System v2.0</div>
+      </section>
+    </div>
+  </div>
+  
+  <script>
+    // 目次にジャンプする機能
+    document.querySelectorAll('.nav-item a').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        window.scrollTo({
+          top: targetElement.offsetTop - 60,
+          behavior: 'smooth'
+        });
+      });
+    });
+    
+    // スクロール時のグラフアニメーション
+    function isElementInViewport(el) {
+      const rect = el.getBoundingClientRect();
+      return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    }
+    
+    function handleScroll() {
+      document.querySelectorAll('.bar').forEach(bar => {
+        if (isElementInViewport(bar) && !bar.classList.contains('animated')) {
+          bar.classList.add('animated');
+          const height = bar.getAttribute('data-value');
+          const numericHeight = parseInt(height, 10);
+          bar.style.height = '0px';
+          setTimeout(() => {
+            bar.style.height = `${numericHeight * 3}px`;
+          }, 100);
+        }
+      });
+    }
+    
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // 初期ロード時にも実行
+  </script>
+</body>
+</html>
